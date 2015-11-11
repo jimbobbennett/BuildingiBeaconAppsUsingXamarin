@@ -12,9 +12,6 @@ namespace iBeaconApp
     {
         // class-level declarations
 
-        private CLLocationManager _locationManager;
-        private CLBeaconRegion _region;
-
         public override UIWindow Window
         {
             get;
@@ -26,43 +23,7 @@ namespace iBeaconApp
             // Override point for customization after application launch.
             // If not required for your application you can safely delete this method
 
-            var userNotificationSettings = UIUserNotificationSettings.GetSettingsForTypes(UIUserNotificationType.Alert, new NSSet());
-            UIApplication.SharedApplication.RegisterUserNotificationSettings(userNotificationSettings);
-
-            _locationManager = new CLLocationManager();
-            _locationManager.AuthorizationChanged += LocationManagerAuthorizationChanged;
-            _locationManager.RegionEntered += LocationManagerRegionEntered;
-            _locationManager.RegionLeft += LocationManagerRegionLeft;
-
-            _locationManager.RequestAlwaysAuthorization();
-
-            _region = new CLBeaconRegion(new NSUuid("18E1FDEA-15E6-425E-B88C-2642B8F3C378"), "MyRegion");
-
             return true;
-        }
-
-        void LocationManagerAuthorizationChanged (object sender, CLAuthorizationChangedEventArgs e)
-        {
-            Debug.WriteLine("Authorisation state: {0}", e.Status);
-
-            if (e.Status == CLAuthorizationStatus.AuthorizedAlways)
-            {
-                _locationManager.StartMonitoring(_region);
-            }
-        }
-
-        void LocationManagerRegionLeft (object sender, CLRegionEventArgs e)
-        {
-            var notification = new UILocalNotification();
-            notification.AlertBody = "Goodbye iBeacon!";
-            UIApplication.SharedApplication.PresentLocalNotificationNow(notification);
-        }
-
-        void LocationManagerRegionEntered (object sender, CLRegionEventArgs e)
-        {
-            var notification = new UILocalNotification();
-            notification.AlertBody = "Hello iBeacon!";
-            UIApplication.SharedApplication.PresentLocalNotificationNow(notification);
         }
 
         public override void OnResignActivation(UIApplication application)
